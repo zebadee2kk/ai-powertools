@@ -32,31 +32,39 @@ AI PowerTools is structured into 6 logical tiers of increasing complexity:
 
 ---
 
-## 📅 Milestone 1: The Core Five (Weeks 1-4)
-Implement the absolute essentials for any AI application:
-1.  **#1 Project Scaffolder**: Auto-create standardized component skeletons. (The Builder)
-2.  **#5 LLM Router**: Stable v1.0 with rule-based and simple complexity routing.
-3.  **#6 Token & Cost Tracker**: Real-time tracking across OpenAI/Anthropic/Ollama.
-4.  **#9 Structured Logger**: OTel-based logging for all components.
-5.  **#11 Privacy Layer**: Basic PII masking and secret detection.
+## 🏁 The Core Module Strategy
+To maximize development speed and maintainability, we have distilled 64 component ideas into **7 Core Modules**:
+1. `powertools-meta`: Build tools & Abstraction layer.
+2. `powertools-router`: Smart routing & Cost optimization.
+3. `powertools-guard`: Security, PII, and Validation.
+4. `powertools-memory`: Hierarchical long-term memory.
+5. `powertools-engine`: Autonomous execution & Workflows.
+6. `powertools-content`: Automated dev-logging & Marketing.
+7. `powertools-evolve`: Local model distillation (R&D).
 
-## 📅 Milestone 2: The Intelligence Layer (Weeks 5-8)
-1.  **#18 Abstraction Layer**: Unified interface for major providers.
-2.  **#25 Memory Manager**: SQLite-backed episodic and semantic memory.
-3.  **#27 Output Validator**: Pydantic-based response enforcement.
-4.  **#14 Least-Cost Router**: Use cost data to optimize routing decisions.
-5.  **#55-64 whoamiAI**: Launch the first reference application prototype.
+---
 
-## 📅 Milestone 3: Scale & Automation (Weeks 9-12)
-1.  **#4 MCP Server Framework**: Expose all tools via Model Context Protocol.
-2.  **#48 Workflow Engine**: YAML-based DAG execution.
-3.  **#51 Autonomous Task Processor**: Issue-to-PR automation.
-4.  **#54 Local Model Evolver**: Knowledge distillation for local LLMs.
+## 📅 Milestone 1: The Builder (Weeks 1-2)
+**Goal:** Build the tool that builds everything else.
+- Implement **`powertools-meta`**:
+    - Abstraction Layer (Core LLM Interface).
+    - Project Scaffolder (CLI to generate standardized PowerTools).
+    - Dev Practices Engine (Automated linting/testing injection).
 
-## 📅 Milestone 4: Content & Distribution (Weeks 13-16)
-1.  **#46 Workspace Blogger**: Auto-generate work-in-progress blogs/vlogs.
-2.  **#47 Social Media Multi-Poster**: Multi-platform distribution using style profiles.
-3.  **#52 AI Gateway**: Drop-in proxy for external app integration.
+## 📅 Milestone 2: The Safe Runtime (Weeks 3-4)
+**Goal:** Establish a cost-aware, secure interface for all other tools.
+- Implement **`powertools-router`**: Rule-based routing and Token/Cost tracking.
+- Implement **`powertools-guard`**: PII masking and Output validation.
+
+## 📅 Milestone 3: The Intelligence Layer (Weeks 5-8)
+**Goal:** Give the ecosystem persistence and autonomous capabilities.
+- Implement **`powertools-memory`**: SQLite/ChromaDB hybrid store.
+- Implement **`powertools-engine`** (Alpha): Task decomposition and basic workflows.
+
+## 📅 Milestone 4: Content & Scale (Weeks 9+)
+**Goal:** Automated documentation and reference applications.
+- Implement **`powertools-content`**: The Workspace Blogger and Social Poster.
+- Start **whoamiAI** reference app integration.
 
 ---
 
