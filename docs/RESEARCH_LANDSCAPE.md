@@ -475,9 +475,282 @@ brain.export("brain_snapshot_2026-02-15.tar.gz")
 
 ---
 
+## 🔧 INFRASTRUCTURE & MIDDLEWARE LAYERS
+
+These are the **plumbing layers** that sit between applications and AI providers. They make AI workloads cheaper, more robust, and smarter. Think of them as the middleware stack that every serious AI deployment needs.
+
+### 21. Least-Cost Router
+
+Goes beyond our basic complexity-based routing. This is a **real-time cost optimiser** that factors in pricing, quality, latency, and availability to pick the cheapest provider that meets the quality threshold.
+
+| Feature | Description |
+|---------|-------------|
+| **Dynamic Pricing Awareness** | Real-time lookup of per-model, per-token pricing across all providers |
+| **Quality Floor** | Set minimum acceptable quality (e.g. "at least 90% as good as GPT-4") and route to cheapest provider that clears it |
+| **Spot Pricing** | Some providers offer off-peak discounts. Route non-urgent work to cheapest time slots |
+| **Batch Optimisation** | Batch multiple small requests into one API call where supported (e.g. OpenAI Batch API at 50% discount) |
+| **Budget-Aware Routing** | As daily/monthly budget depletes, automatically shift to cheaper models |
+| **Cost Forecasting** | Predict cost of a task before executing, allow approval/override |
+
+```python
+from powertools.middleware.cost_router import LeastCostRouter
+
+router = LeastCostRouter(
+    quality_floor=0.85,  # Minimum quality threshold (0-1)
+    daily_budget=5.00,   # USD
+    prefer_local=True    # Always try local first
+)
+# → Automatically picks the cheapest provider that meets quality requirements
+# → Shifts to smaller models as budget depletes
+```
+
+### 22. Sanitisation Layer
+
+A bidirectional cleaning layer for both **inputs** (prompts) and **outputs** (responses). Ensures everything going in and coming out is safe, clean, and well-formed.
+
+| Direction | Feature | Description |
+|-----------|---------|-------------|
+| **Input** | Prompt injection detection | Block attempts to override system prompts |
+| **Input** | Token limit enforcement | Truncate or compress prompts that exceed context windows |
+| **Input** | Encoding normalisation | Fix Unicode issues, strip control characters, normalise whitespace |
+| **Input** | Content policy enforcement | Block prohibited content categories |
+| **Output** | Schema validation | Ensure response matches expected format |
+| **Output** | Toxicity filtering | Remove or flag harmful content in responses |
+| **Output** | Hallucination markers | Flag low-confidence claims |
+| **Output** | Format cleanup | Strip markdown artifacts, fix broken JSON, normalise line endings |
+| **Both** | Logging & audit | Record all sanitisation actions for debugging |
+
+```python
+from powertools.middleware.sanitiser import Sanitiser, InputRules, OutputRules
+
+sanitiser = Sanitiser(
+    input_rules=InputRules(max_tokens=4096, block_injections=True, strip_pii=True),
+    output_rules=OutputRules(validate_json=True, filter_toxicity=True, max_length=2000)
+)
+
+clean_router = sanitiser.wrap(llm_router)
+# → All inputs cleaned before sending, all outputs validated before returning
+```
+
+### 23. Orchestration Layer
+
+A lightweight but powerful **task coordination** layer. Unlike a full workflow engine (Tier 3), this is a simpler, code-first orchestrator for chaining AI operations together.
+
+| Feature | Description |
+|---------|-------------|
+| **Chain** | Sequential execution: output of step N becomes input to step N+1 |
+| **Parallel** | Run multiple steps concurrently and collect all results |
+| **Conditional** | Branch execution based on intermediate results |
+| **Loop** | Repeat a step until a condition is met (e.g. quality threshold) |
+| **Map/Reduce** | Split a task across multiple items, process in parallel, merge results |
+| **Retry with Escalation** | On failure, retry with a more capable model |
+| **Human-in-the-Loop** | Pause execution for human approval at critical steps |
+| **Cost Tracking** | Total cost across all steps, per-step breakdown |
+
+```python
+from powertools.middleware.orchestrator import Pipeline, Step
+
+pipeline = Pipeline([
+    Step("extract", model="ollama:mistral", prompt="Extract key facts from: {input}"),
+    Step("analyse", model="auto", prompt="Analyse these facts: {extract.output}"),
+    Step("report", model="openai:gpt-4o", prompt="Write executive summary: {analyse.output}")
+])
+result = await pipeline.run(input=document_text)
+# → Chains local extraction → auto-routed analysis → cloud report generation
+# → Total cost and per-step breakdown available
+```
+
+### 24. Local Thinker / Consensus Engine
+
+Sends the same query to **multiple LLMs**, then uses a local model to collate, compare, and synthesise the best response. Like having a panel of experts debate and agree.
+
+| Feature | Description |
+|---------|-------------|
+| **Multi-Model Query** | Fan-out the same prompt to 2-5 different models simultaneously |
+| **Response Comparison** | Local model analyses all responses for agreement/disagreement |
+| **Consensus Scoring** | Rate confidence based on how many models agree |
+| **Best-of-N Selection** | Pick the single best response based on quality metrics |
+| **Synthesis** | Merge the best parts of each response into a superior combined answer |
+| **Disagreement Flagging** | Alert when models strongly disagree (sign of ambiguity or hallucination) |
+| **Confidence Score** | Output includes a confidence level based on inter-model agreement |
+
+```python
+from powertools.middleware.consensus import ConsensusEngine
+
+consensus = ConsensusEngine(
+    models=["ollama:llama3", "openai:gpt-4o-mini", "anthropic:claude-3-haiku"],
+    thinker="ollama:mistral",  # Local model that judges and synthesises
+    strategy="synthesise"  # best_of | vote | synthesise
+)
+result = await consensus.think("What are the security implications of this code?")
+# → Queries 3 models in parallel
+# → Local thinker analyses all responses
+# → Returns synthesised answer with confidence score
+print(result.confidence)  # 0.92 (high agreement)
+print(result.disagreements)  # ["Model A flagged XSS, others did not"]
+```
+
+### 25. Abstraction Layer (Universal AI Interface)
+
+A single, unified API that abstracts away **all differences** between providers, modalities, and deployment targets. Write once, run on any AI.
+
+| Feature | Description |
+|---------|-------------|
+| **Unified API** | Same function call works for OpenAI, Anthropic, Ollama, Gemini, Mistral, etc. |
+| **Multi-Modal** | Same interface for text, code, image, audio, video generation |
+| **Deployment Agnostic** | Same code works locally, on a server, in Docker, or serverless |
+| **Provider Swap** | Change provider with a single config change, zero code changes |
+| **Capability Discovery** | Automatically detect what each model/provider can do |
+| **Format Normalisation** | All responses normalised to a consistent format regardless of provider |
+| **Feature Flags** | Gracefully degrade when a provider doesn't support a feature (e.g. streaming, function calling) |
+
+```python
+from powertools.middleware.abstraction import AI
+
+ai = AI()  # Auto-discovers configured providers
+
+# Same API for any model
+response = await ai.complete("Explain quantum computing", model="auto")
+response = await ai.complete("Explain quantum computing", model="openai:gpt-4o")
+response = await ai.complete("Explain quantum computing", model="ollama:llama3")
+# → Identical response format regardless of provider
+
+# Multi-modal with the same interface
+image = await ai.generate("A futuristic city", modality="image", model="auto")
+code = await ai.generate("Sort algorithm in Rust", modality="code", model="auto")
+```
+
+---
+
+## 🧠 ADDITIONAL BRAINSTORMED IDEAS
+
+Thinking further along the "middleware layers" pattern:
+
+### 26. Rate Limiter & Throttle Manager
+
+Manage API rate limits across multiple providers intelligently. Prevents 429 errors and optimises throughput.
+
+| Feature | Description |
+|---------|-------------|
+| **Per-Provider Rate Tracking** | Track requests/min, tokens/min, requests/day per provider |
+| **Automatic Throttling** | Slow down requests before hitting limits |
+| **Overflow Routing** | When provider A is rate-limited, automatically route to provider B |
+| **Queue Management** | Queue excess requests and drain them as capacity becomes available |
+| **Priority Lanes** | High-priority requests skip the queue |
+
+### 27. Model Health Monitor
+
+Real-time monitoring of model/provider availability, latency, and quality. Like a Nagios/Pingdom for AI.
+
+| Feature | Description |
+|---------|-------------|
+| **Latency Tracking** | P50, P95, P99 response times per model |
+| **Error Rate Monitoring** | Track failure rates and error types per provider |
+| **Quality Drift Detection** | Detect when a model's quality degrades over time |
+| **Availability Dashboard** | Real-time status of all configured providers |
+| **Alerting** | Webhook/email alerts when a provider degrades or goes down |
+| **Auto-Failover Trigger** | Automatically remove unhealthy providers from the routing pool |
+
+### 28. Resilience & Circuit Breaker Layer
+
+Production-grade error handling for AI workloads. Inspired by Netflix's Hystrix pattern.
+
+| Feature | Description |
+|---------|-------------|
+| **Circuit Breaker** | After N failures, stop calling a provider and use fallback |
+| **Exponential Backoff** | Smart retry timing with jitter |
+| **Timeout Management** | Per-model timeout configs with automatic cancellation |
+| **Bulkhead Isolation** | Prevent one failing provider from blocking all requests |
+| **Graceful Degradation** | Return cached/lower-quality responses rather than failing completely |
+| **Dead Letter Queue** | Store failed requests for later retry or manual review |
+
+### 29. Context Distiller
+
+Automatically compress or summarise context to fit smaller (cheaper) model context windows.
+
+| Feature | Description |
+|---------|-------------|
+| **Progressive Summarisation** | Condense old conversation turns into summaries |
+| **Relevance Filtering** | Strip context that's irrelevant to the current query |
+| **Token Budget Packing** | Optimally pack the most relevant context into a token budget |
+| **Multi-Level Compression** | Full text → key points → single sentence, with controllable levels |
+| **Source Preservation** | Track which original content each summary came from |
+
+### 30. Task Decomposer
+
+Automatically break complex tasks into sub-tasks, route each to the optimal model, and reassemble results.
+
+| Feature | Description |
+|---------|-------------|
+| **Automatic Decomposition** | Use a fast model to analyse a complex prompt and split it |
+| **Sub-Task Typing** | Classify each sub-task (code, analysis, search, creative writing) |
+| **Optimal Routing** | Route each sub-task to the model best suited for that type |
+| **Parallel Execution** | Run independent sub-tasks concurrently |
+| **Result Assembly** | Merge sub-task results into a coherent final response |
+| **Cost Comparison** | Show cost of decomposed execution vs. single-model execution |
+
+### 31. Multi-Modal Router
+
+Extend routing beyond text to handle images, audio, video, and code as first-class citizens.
+
+| Feature | Description |
+|---------|-------------|
+| **Modality Detection** | Auto-detect input type (text, image, audio, mixed) |
+| **Specialist Routing** | Route image tasks to vision models, code to coding models, etc. |
+| **Cross-Modal Chains** | text → image → analysis → text pipelines |
+| **Format Conversion** | Convert between modalities (speech-to-text, image-to-description) |
+
+### 32. Response Streaming Aggregator
+
+Stream responses from multiple models simultaneously and merge them in real-time.
+
+| Feature | Description |
+|---------|-------------|
+| **Parallel Streaming** | Stream from 2+ models simultaneously |
+| **First-Token Wins** | Return from whichever model starts responding first |
+| **Quality Gate** | Stream the fast response but replace with a better one if it arrives within a window |
+| **Token-Level Merge** | Interleave tokens from multiple streams for real-time consensus |
+
+### 33. Embedding Pipeline Manager
+
+Manage the full lifecycle of text embeddings across multiple providers.
+
+| Feature | Description |
+|---------|-------------|
+| **Multi-Provider Embeddings** | Generate embeddings from OpenAI, Cohere, local models, etc. |
+| **Embedding Cache** | Cache embeddings to avoid re-computing for the same text |
+| **Batch Processing** | Efficient batch embedding generation for large document sets |
+| **Dimension Reduction** | Automatically reduce dimensions for storage efficiency |
+| **Provider Migration** | Re-embed existing data when switching embedding providers |
+
+### 34. API Translation Layer
+
+Automatically translate between different LLM API formats. The "Babel fish" for AI APIs.
+
+| Feature | Description |
+|---------|-------------|
+| **Format Translation** | Convert OpenAI format ↔ Anthropic format ↔ Ollama format ↔ others |
+| **Feature Mapping** | Map equivalent features across providers (e.g. OpenAI tools → Anthropic tool_use) |
+| **Capability Shims** | Simulate missing features (e.g. fake function calling for models that don't support it) |
+| **Version Handling** | Handle API versioning differences automatically |
+
+### 35. Latency Predictor
+
+Estimate how long a request will take before sending it. Critical for user-facing applications.
+
+| Feature | Description |
+|---------|-------------|
+| **Historical Modelling** | Build latency models from past requests (input size → response time) |
+| **Token-Based Estimation** | Estimate response time based on expected output tokens |
+| **Queue Depth Awareness** | Factor in current queue depth at each provider |
+| **SLA Routing** | Route to providers that can meet a latency SLA (e.g. "respond within 2 seconds") |
+| **User Feedback** | Show estimated wait time to users before sending |
+
+---
+
 ## 💡 CONSOLIDATED COMPONENT IDEAS
 
-**Total: 30+ components across 4 tiers**
+**Total: 42 components across 5 tiers**
 
 ### Tier 0: Meta-Tools (Build the Builder)
 
@@ -502,32 +775,49 @@ brain.export("brain_snapshot_2026-02-15.tar.gz")
 | 12 | **Provider Pricing DB** | 🟡 Medium | Auto-updated model pricing for cost accuracy |
 | 13 | **LiteLLM Adapter** | 🟡 Medium | Plug LiteLLM as a provider for 100+ model support |
 
-### Tier 2: Tools
+### Tier 2: Middleware Layers
 
 | # | Component | Priority | Description |
 |---|-----------|----------|-------------|
-| 14 | **Memory Manager** | 🔴 High | Multi-type memory (episodic, semantic, procedural, working, long-term) |
-| 15 | **Semantic Cache** | 🔴 High | Vector-similarity caching layer for the Router |
-| 16 | **Output Validator** | 🔴 High | Provider-agnostic Pydantic schema enforcement with retries |
-| 17 | **RISEN Prompt Builder** | 🔴 High | Structured prompt engineering (Role, Instructions, Steps, End Goal, Narrowing) |
-| 18 | **CARE Framework Builder** | 🟡 Medium | Structured prompt engineering (Context, Action, Result, Example) |
-| 19 | **LLM Research Wrapper** | 🔴 High | Delegate tasks to external LLMs, fan-out, compare, aggregate |
-| 20 | **Prompt Manager** | 🟡 Medium | Version control, A/B testing, templates for prompts |
-| 21 | **Context Window Manager** | 🟡 Medium | Smart chunking, compression, context packing |
-| 22 | **Fact Checker** | 🟡 Medium | Inline hallucination detection with confidence scores |
-| 23 | **Evaluation Suite** | 🟡 Medium | Automated quality scoring (factuality, relevance, toxicity) |
-| 24 | **Code Reviewer** | 🟢 Lower | AI-powered PR analysis using Router for model selection |
+| 14 | **Least-Cost Router** | 🔴 High | Real-time cost optimisation with quality floor and budget awareness |
+| 15 | **Sanitisation Layer** | 🔴 High | Bidirectional input/output cleaning, validation, and enforcement |
+| 16 | **Orchestration Layer** | 🔴 High | Chain, parallel, conditional, map/reduce task coordination |
+| 17 | **Consensus Engine** | 🔴 High | Multi-model fan-out with local thinker for synthesis and scoring |
+| 18 | **Abstraction Layer** | 🔴 High | Universal AI interface — write once, run on any provider/modality |
+| 19 | **Resilience Layer** | 🔴 High | Circuit breakers, exponential backoff, bulkhead isolation |
+| 20 | **Rate Limiter** | 🟡 Medium | Per-provider rate tracking, throttling, overflow routing |
+| 21 | **API Translation Layer** | 🟡 Medium | Auto-translate between OpenAI/Anthropic/Ollama/etc. API formats |
+| 22 | **Context Distiller** | 🟡 Medium | Progressive summarisation and relevance filtering for context |
+| 23 | **Latency Predictor** | 🟢 Lower | Historical modelling and SLA-based routing |
+| 24 | **Response Streaming Aggregator** | 🟢 Lower | Parallel streaming from multiple models with real-time merge |
 
-### Tier 3: Orchestrators & Systems
+### Tier 3: Tools
 
 | # | Component | Priority | Description |
 |---|-----------|----------|-------------|
-| 25 | **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
-| 26 | **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
-| 27 | **Air-Gapped AI Brain** | 🟡 Medium | Fully offline, self-contained AI system with local models |
-| 28 | **Task Scheduler** | 🟢 Lower | Cron-like scheduling for AI workflows |
-| 29 | **Red Team Framework** | 🟢 Lower | Automated adversarial testing for LLM apps |
-| 30 | **Model Benchmark Suite** | 🟢 Lower | Compare models on cost, quality, latency for specific tasks |
+| 25 | **Memory Manager** | 🔴 High | Multi-type memory (episodic, semantic, procedural, working, long-term) |
+| 26 | **Semantic Cache** | 🔴 High | Vector-similarity caching layer for the Router |
+| 27 | **Output Validator** | 🔴 High | Provider-agnostic Pydantic schema enforcement with retries |
+| 28 | **RISEN Prompt Builder** | 🔴 High | Structured prompt engineering (Role, Instructions, Steps, End Goal, Narrowing) |
+| 29 | **CARE Framework Builder** | 🟡 Medium | Structured prompt engineering (Context, Action, Result, Example) |
+| 30 | **LLM Research Wrapper** | 🔴 High | Delegate tasks to external LLMs, fan-out, compare, aggregate |
+| 31 | **Prompt Manager** | 🟡 Medium | Version control, A/B testing, templates for prompts |
+| 32 | **Context Window Manager** | 🟡 Medium | Smart chunking, compression, context packing |
+| 33 | **Fact Checker** | 🟡 Medium | Inline hallucination detection with confidence scores |
+| 34 | **Evaluation Suite** | 🟡 Medium | Automated quality scoring (factuality, relevance, toxicity) |
+| 35 | **Embedding Pipeline** | 🟡 Medium | Multi-provider embedding generation, caching, batch processing |
+| 36 | **Task Decomposer** | 🟡 Medium | Auto-split complex tasks, route sub-tasks, reassemble results |
+| 37 | **Multi-Modal Router** | 🟢 Lower | Route by modality (text, image, audio, code) to specialist models |
+| 38 | **Code Reviewer** | 🟢 Lower | AI-powered PR analysis using Router for model selection |
+| 39 | **Model Health Monitor** | 🟡 Medium | Latency, error rate, quality drift tracking with alerts |
+
+### Tier 4: Orchestrators & Systems
+
+| # | Component | Priority | Description |
+|---|-----------|----------|-------------|
+| 40 | **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
+| 41 | **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
+| 42 | **Air-Gapped AI Brain** | 🟡 Medium | Fully offline, self-contained AI system with local models |
 
 ---
 
