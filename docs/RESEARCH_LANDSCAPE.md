@@ -1094,7 +1094,7 @@ Self-Hosted Stack            →  Air-Gapped AI Brain, Privacy Layer
 
 ## 💡 CONSOLIDATED COMPONENT IDEAS
 
-**Total: 61 components across 6 tiers**
+**Total: 62 components across 6 tiers**
 
 ### Tier 0: Meta-Tools (Build the Builder)
 
@@ -1171,21 +1171,35 @@ Self-Hosted Stack            →  Air-Gapped AI Brain, Privacy Layer
 | 49 | **Autonomous Task Processor** | 🟡 Medium | Issue-driven autonomous dev with cost controls and safe git |
 | 50 | **AI Gateway (Proxy Mode)** | 🟡 Medium | Drop-in HTTP proxy with caching, guardrails, rate limiting |
 | 51 | **AI-to-Dashboard Generator** | 🟢 Lower | Auto-generate web UIs from AI pipelines |
+| 52 | **Local Model Evolver** | 🟡 Medium | Make local LLMs smarter by distilling & learning from public LLM responses |
+
+#### 52. Local Model Evolver (Knowledge Distillation)
+
+A mechanism for local LLMs to "learn" from superior results obtained from public LLMs, shortening the intelligence gap without high costs.
+
+| Feature | Description |
+|---------|-------------|
+| **Synthetic Dataset Gen** | Capture high-quality public LLM trajectories for local training |
+| **Correction Memory** | Store "corrections" when public LLMs outperform local ones |
+| **Intelligence Filtering** | Memory intelligence layer to filter what is worth learning |
+| **Fine-Tuning Loop** | Automated pipeline for local fine-tuning (Unsloth/Axolotl) |
+| **Self-Improvement** | Gradually reduce reliance on public models for specific domains |
+
 
 ### Tier 5: Reference Applications
 
 | # | Component | Priority | Description |
 |---|-----------|----------|-------------|
-| 52 | **whoamiAI: Export Ingestion** | 🟡 Medium | Multi-provider AI conversation export parsing and normalisation |
-| 53 | **whoamiAI: Conversation Normaliser** | 🟡 Medium | Unified conversation schema with metadata enrichment |
-| 54 | **whoamiAI: Style Profiler** | 🟡 Medium | Writing style, tone, vocabulary, and pattern analysis |
-| 55 | **whoamiAI: Skills Extractor** | 🟡 Medium | Topic clustering, expertise scoring, knowledge gap identification |
-| 56 | **whoamiAI: Local RAG Server** | 🟡 Medium | Searchable, queryable interface over personal AI history |
-| 57 | **whoamiAI: PII Redaction** | 🔴 High | Regex + NER + secret scanning with reversible masking |
-| 58 | **whoamiAI: Profile Generator** | 🟡 Medium | Generate whoami profile, style guide, skills matrix, resume draft |
-| 59 | **whoamiAI: Provider Plugins** | 🟡 Medium | Extensible plugin system for new AI export sources |
-| 60 | **whoamiAI: Scheduled Pipelines** | 🟢 Lower | Cron-based incremental processing and change detection |
-| 61 | **whoamiAI: Self-Hosted Stack** | 🟢 Lower | Docker Compose with Ollama + ChromaDB + FastAPI |
+| 53 | **whoamiAI: Export Ingestion** | 🟡 Medium | Multi-provider AI conversation export parsing and normalisation |
+| 54 | **whoamiAI: Conversation Normaliser** | 🟡 Medium | Unified conversation schema with metadata enrichment |
+| 55 | **whoamiAI: Style Profiler** | 🟡 Medium | Writing style, tone, vocabulary, and pattern analysis |
+| 56 | **whoamiAI: Skills Extractor** | 🟡 Medium | Topic clustering, expertise scoring, knowledge gap identification |
+| 57 | **whoamiAI: Local RAG Server** | 🟡 Medium | Searchable, queryable interface over personal AI history |
+| 58 | **whoamiAI: PII Redaction** | 🔴 High | Regex + NER + secret scanning with reversible masking |
+| 59 | **whoamiAI: Profile Generator** | 🟡 Medium | Generate whoami profile, style guide, skills matrix, resume draft |
+| 60 | **whoamiAI: Provider Plugins** | 🟡 Medium | Extensible plugin system for new AI export sources |
+| 61 | **whoamiAI: Scheduled Pipelines** | 🟢 Lower | Cron-based incremental processing and change detection |
+| 62 | **whoamiAI: Self-Hosted Stack** | 🟢 Lower | Docker Compose with Ollama + ChromaDB + FastAPI |
 
 ---
 

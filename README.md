@@ -2,7 +2,7 @@
 
 **The composable toolkit that LangChain should have been.**
 
-AI PowerTools is a comprehensive collection of 60+ modular, production-ready AI engineering components. Whether you need a simple cost tracker, a complex multi-model consensus engine, or a privacy-first memory system, PowerTools provides the building blocks.
+AI PowerTools is a comprehensive collection of 62+ modular, production-ready AI engineering components. Whether you need a simple cost tracker, a complex multi-model consensus engine, or a privacy-first memory system, PowerTools provides the building blocks.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
