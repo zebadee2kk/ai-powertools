@@ -34,25 +34,32 @@ AI PowerTools is structured into 6 logical tiers of increasing complexity:
 
 ## 📅 Milestone 1: The Core Five (Weeks 1-4)
 Implement the absolute essentials for any AI application:
-1.  **#5 LLM Router**: Stable v1.0 with rule-based and simple complexity routing.
-2.  **#6 Cost Tracker**: Real-time tracking across OpenAI/Anthropic/Ollama.
-3.  **#11 Privacy Layer**: Basic PII masking and secret detection.
-4.  **#18 Abstraction Layer**: Unified interface for 5 major providers.
-5.  **#25 Memory Manager**: SQLite-backed episodic and semantic memory.
+1.  **#1 Project Scaffolder**: Auto-create standardized component skeletons. (The Builder)
+2.  **#5 LLM Router**: Stable v1.0 with rule-based and simple complexity routing.
+3.  **#6 Token & Cost Tracker**: Real-time tracking across OpenAI/Anthropic/Ollama.
+4.  **#9 Structured Logger**: OTel-based logging for all components.
+5.  **#11 Privacy Layer**: Basic PII masking and secret detection.
 
-## 📅 Milestone 2: The Infrastructure (Weeks 5-8)
-Connect the core components into a robust system:
-1.  **#14 Least-Cost Router**: Use cost data to optimize routing decisions.
-2.  **#17 Consensus Engine**: Implement local multi-model evaluation.
+## 📅 Milestone 2: The Intelligence Layer (Weeks 5-8)
+1.  **#18 Abstraction Layer**: Unified interface for major providers.
+2.  **#25 Memory Manager**: SQLite-backed episodic and semantic memory.
 3.  **#27 Output Validator**: Pydantic-based response enforcement.
-4.  **#28 RISEN Builder**: Structured prompt framework.
-5.  **#52-61 whoamiAI**: Launch the first reference application prototype.
+4.  **#14 Least-Cost Router**: Use cost data to optimize routing decisions.
+5.  **#55-64 whoamiAI**: Launch the first reference application prototype.
 
-## 📅 Milestone 3: Ecosystem & Scale (Weeks 9-12)
-1.  **#4 MCP Server**: Expose all tools via Model Context Protocol.
-2.  **#40 Workflow Engine**: YAML-based DAG execution.
-3.  **#49 Autonomous Task Processor**: Issue-to-PR automation.
+## 📅 Milestone 3: Scale & Automation (Weeks 9-12)
+1.  **#4 MCP Server Framework**: Expose all tools via Model Context Protocol.
+2.  **#48 Workflow Engine**: YAML-based DAG execution.
+3.  **#51 Autonomous Task Processor**: Issue-to-PR automation.
+4.  **#54 Local Model Evolver**: Knowledge distillation for local LLMs.
+
+## 📅 Milestone 4: Content & Distribution (Weeks 13-16)
+1.  **#46 Workspace Blogger**: Auto-generate work-in-progress blogs/vlogs.
+2.  **#47 Social Media Multi-Poster**: Multi-platform distribution using style profiles.
+3.  **#52 AI Gateway**: Drop-in proxy for external app integration.
 
 ---
 
-> 📄 **Deep Dive:** For a granular list of all 61 components, detailed competitive analysis, and strategic positioning, see [docs/RESEARCH_LANDSCAPE.md](./docs/RESEARCH_LANDSCAPE.md).
+> ⛓️ **Build Strategy:** For the detailed bootstrapping sequence and "Multiplier Tool" analysis, see [docs/BUILD_STRATEGY.md](./docs/BUILD_STRATEGY.md).
+
+> 📄 **Deep Dive:** For a granular list of all 64 components, detailed competitive analysis, and strategic positioning, see [docs/RESEARCH_LANDSCAPE.md](./docs/RESEARCH_LANDSCAPE.md).

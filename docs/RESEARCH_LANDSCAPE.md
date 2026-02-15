@@ -1094,7 +1094,7 @@ Self-Hosted Stack            →  Air-Gapped AI Brain, Privacy Layer
 
 ## 💡 CONSOLIDATED COMPONENT IDEAS
 
-**Total: 62 components across 6 tiers**
+**Total: 64 components across 6 tiers**
 
 ### Tier 0: Meta-Tools (Build the Builder)
 
@@ -1160,20 +1160,22 @@ Self-Hosted Stack            →  Air-Gapped AI Brain, Privacy Layer
 | 43 | **A/B Testing Framework** | 🟡 Medium | Model/prompt comparison with statistical significance |
 | 44 | **Zero-Access Encryption** | 🟢 Lower | E2E encryption with user-held keys, encrypted search |
 | 45 | **Data Sovereignty Manager** | 🟢 Lower | Geo-routing, compliance reports, data lineage tracking |
+| 46 | **Workspace Blogger** | 🟡 Medium | Monitor dev activity (git, tasks) & auto-generate blog/vlog content |
+| 47 | **Social Media Multi-Poster** | 🟡 Medium | Multi-platform (X, LinkedIn) posting with style profiling |
 
 ### Tier 4: Orchestrators & Systems
 
 | # | Component | Priority | Description |
 |---|-----------|----------|-------------|
-| 46 | **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
-| 47 | **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
-| 48 | **Air-Gapped AI Brain** | 🟡 Medium | Fully offline, self-contained AI system with local models |
-| 49 | **Autonomous Task Processor** | 🟡 Medium | Issue-driven autonomous dev with cost controls and safe git |
-| 50 | **AI Gateway (Proxy Mode)** | 🟡 Medium | Drop-in HTTP proxy with caching, guardrails, rate limiting |
-| 51 | **AI-to-Dashboard Generator** | 🟢 Lower | Auto-generate web UIs from AI pipelines |
-| 52 | **Local Model Evolver** | 🟡 Medium | Make local LLMs smarter by distilling & learning from public LLM responses |
+| 48 | **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
+| 49 | **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
+| 50 | **Air-Gapped AI Brain** | 🟡 Medium | Fully offline, self-contained AI system with local models |
+| 51 | **Autonomous Task Processor** | 🟡 Medium | Issue-driven autonomous dev with cost controls and safe git |
+| 52 | **AI Gateway (Proxy Mode)** | 🟡 Medium | Drop-in HTTP proxy with caching, guardrails, rate limiting |
+| 53 | **AI-to-Dashboard Generator** | 🟢 Lower | Auto-generate web UIs from AI pipelines |
+| 54 | **Local Model Evolver** | 🟡 Medium | Make local LLMs smarter by distilling & learning from public LLM responses |
 
-#### 52. Local Model Evolver (Knowledge Distillation)
+#### 54. Local Model Evolver (Knowledge Distillation)
 
 A mechanism for local LLMs to "learn" from superior results obtained from public LLMs, shortening the intelligence gap without high costs.
 
@@ -1190,16 +1192,16 @@ A mechanism for local LLMs to "learn" from superior results obtained from public
 
 | # | Component | Priority | Description |
 |---|-----------|----------|-------------|
-| 53 | **whoamiAI: Export Ingestion** | 🟡 Medium | Multi-provider AI conversation export parsing and normalisation |
-| 54 | **whoamiAI: Conversation Normaliser** | 🟡 Medium | Unified conversation schema with metadata enrichment |
-| 55 | **whoamiAI: Style Profiler** | 🟡 Medium | Writing style, tone, vocabulary, and pattern analysis |
-| 56 | **whoamiAI: Skills Extractor** | 🟡 Medium | Topic clustering, expertise scoring, knowledge gap identification |
-| 57 | **whoamiAI: Local RAG Server** | 🟡 Medium | Searchable, queryable interface over personal AI history |
-| 58 | **whoamiAI: PII Redaction** | 🔴 High | Regex + NER + secret scanning with reversible masking |
-| 59 | **whoamiAI: Profile Generator** | 🟡 Medium | Generate whoami profile, style guide, skills matrix, resume draft |
-| 60 | **whoamiAI: Provider Plugins** | 🟡 Medium | Extensible plugin system for new AI export sources |
-| 61 | **whoamiAI: Scheduled Pipelines** | 🟢 Lower | Cron-based incremental processing and change detection |
-| 62 | **whoamiAI: Self-Hosted Stack** | 🟢 Lower | Docker Compose with Ollama + ChromaDB + FastAPI |
+| 55 | **whoamiAI: Export Ingestion** | 🟡 Medium | Multi-provider AI conversation export parsing and normalisation |
+| 56 | **whoamiAI: Conversation Normaliser** | 🟡 Medium | Unified conversation schema with metadata enrichment |
+| 57 | **whoamiAI: Style Profiler** | 🟡 Medium | Writing style, tone, vocabulary, and pattern analysis |
+| 58 | **whoamiAI: Skills Extractor** | 🟡 Medium | Topic clustering, expertise scoring, knowledge gap identification |
+| 59 | **whoamiAI: Local RAG Server** | 🟡 Medium | Searchable, queryable interface over personal AI history |
+| 60 | **whoamiAI: PII Redaction** | 🔴 High | Regex + NER + secret scanning with reversible masking |
+| 61 | **whoamiAI: Profile Generator** | 🟡 Medium | Generate whoami profile, style guide, skills matrix, resume draft |
+| 62 | **whoamiAI: Provider Plugins** | 🟡 Medium | Extensible plugin system for new AI export sources |
+| 63 | **whoamiAI: Scheduled Pipelines** | 🟢 Lower | Cron-based incremental processing and change detection |
+| 64 | **whoamiAI: Self-Hosted Stack** | 🟢 Lower | Docker Compose with Ollama + ChromaDB + FastAPI |
 
 ---
 
