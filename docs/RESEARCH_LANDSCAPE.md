@@ -234,6 +234,8 @@ await memory.store("semantic", fact="Project X uses FastAPI", source="conversati
 relevant = await memory.recall("What framework does Project X use?", memory_types=["semantic"])
 ```
 
+> 📄 **Full specification:** See [MEMORY_ARCHITECTURE.md](./MEMORY_ARCHITECTURE.md) for the complete memory taxonomy (5 domains, 23 sub-categories), 6 memory types, storage backends, retrieval pipeline, and implementation API.
+
 ### 13. Auto GitHub Project Scaffolding
 
 Automate the creation of well-structured repositories from templates or natural language descriptions.
