@@ -1,35 +1,58 @@
 # AI PowerTools Roadmap 🗺️
 
-This roadmap outlines the planned development of 50+ components for the AI PowerTools ecosystem.
+**Vision:** Building the 60+ foundational components that every production AI system needs.
 
-## 🏁 Phase 1: Foundations (Weeks 1-8)
-**Goal:** Launch 6 production-grade core components.
+## 📊 Summary of Tiers
 
-1.  **LLM Router:** Intelligent routing between local (Ollama, llama.cpp) and cloud (OpenAI, Anthropic, Gemini) models.
-2.  **Token & Cost Tracker:** Real-time counter and budget manager with monthly forecasting.
-3.  **Session Manager:** State persistence with multiple backends (File, Redis, DB).
-4.  **Rate Limiter & Quota Manager:** Adaptive algorithm to prevent API exhaustion.
-5.  **Error Handler & Retry:** Exponential backoff, jitter, and circuit breaker patterns.
-6.  **Structured Logging Framework:** Contextual logging, metrics, and audit trails.
+AI PowerTools is structured into 6 logical tiers of increasing complexity:
 
-## 🛠️ Phase 2: Specialized Tools (Weeks 9-14)
-**Goal:** Build domain-specific tools on top of the foundation.
+###  Tier 0: Meta-Tools (Foundational)
+- **Status:** Planning
+- **Goal:** Build tools that help build the project (Scaffolders, Research Agents, Dev Orchestrators).
 
-*   **GitHub Auto-Setup:** Repository initialization with AI best practices.
-*   **Auto-Researcher:** Autonomous crawler for trends and academic papers.
-*   **Security Hardening:** Secrets detection and prompt injection scanning.
-*   **24/7 Workload Scheduler:** Continuous operation with health monitoring.
-*   **Cost Optimizer:** Spend analysis and reduction recommendations.
-*   **Monitoring & Alerting:** Real-time metrics and anomaly detection.
-*   **Session Replay:** Debugging tools for full execution replay.
+### Tier 1: Foundations (Core)
+- **Status:** Prototype (LLM Router)
+- **Goal:** The "must-haves": Router, Cost Tracking, Session Management, Privacy, and Logging.
 
-## 🎭 Phase 3: High-Level Orchestrators (Weeks 15-20)
-**Goal:** Combine multiple components for common patterns.
+### Tier 2: Middleware Layers (Infrastructure)
+- **Status:** Design Phase
+- **Goal:** Abstraction layers: Least-Cost Routing, Consensus Engines, and Resilience patterns.
 
-*   **AI Orchestrator:** The master component for complex AI workflows.
-*   **Workflow Engine:** DAG-based execution with parallel tasks.
-*   **Advanced Researcher:** Multi-cycle, cross-referencing research agent.
-*   **Autonomous Agent Framework:** Goal-oriented planning and reflection.
+### Tier 3: Tools (Functionality)
+- **Status:** Planning / Designing (Memory Manager)
+- **Goal:** Domain-specific tools: Memory, Output Validation, Prompt Building (RISEN/CARE).
 
-## 🚀 Extended Roadmap (Years 1-2)
-See [Strategic Plan](AI_POWERTOOLS_STRATEGIC_PLAN.md) for the full list of 50+ components and integration plans.
+### Tier 4: Orchestrators & Systems (Architecture)
+- **Status:** Future
+- **Goal:** High-level systems: Autonomous Workflow Engines and Agent Frameworks.
+
+### Tier 5: Reference Applications (Dogfooding)
+- **Status:** Design Phase
+- **Goal:** Real-world examples like **whoamiAI** (Personal AI Mirror).
+
+---
+
+## 📅 Milestone 1: The Core Five (Weeks 1-4)
+Implement the absolute essentials for any AI application:
+1.  **#5 LLM Router**: Stable v1.0 with rule-based and simple complexity routing.
+2.  **#6 Cost Tracker**: Real-time tracking across OpenAI/Anthropic/Ollama.
+3.  **#11 Privacy Layer**: Basic PII masking and secret detection.
+4.  **#18 Abstraction Layer**: Unified interface for 5 major providers.
+5.  **#25 Memory Manager**: SQLite-backed episodic and semantic memory.
+
+## 📅 Milestone 2: The Infrastructure (Weeks 5-8)
+Connect the core components into a robust system:
+1.  **#14 Least-Cost Router**: Use cost data to optimize routing decisions.
+2.  **#17 Consensus Engine**: Implement local multi-model evaluation.
+3.  **#27 Output Validator**: Pydantic-based response enforcement.
+4.  **#28 RISEN Builder**: Structured prompt framework.
+5.  **#52-61 whoamiAI**: Launch the first reference application prototype.
+
+## 📅 Milestone 3: Ecosystem & Scale (Weeks 9-12)
+1.  **#4 MCP Server**: Expose all tools via Model Context Protocol.
+2.  **#40 Workflow Engine**: YAML-based DAG execution.
+3.  **#49 Autonomous Task Processor**: Issue-to-PR automation.
+
+---
+
+> 📄 **Deep Dive:** For a granular list of all 61 components, detailed competitive analysis, and strategic positioning, see [docs/RESEARCH_LANDSCAPE.md](./docs/RESEARCH_LANDSCAPE.md).

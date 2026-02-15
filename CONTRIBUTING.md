@@ -1,43 +1,63 @@
 # Contributing to AI PowerTools 🤝
 
-Thank you for your interest in AI PowerTools! This project aims to be the standard toolkit for AI engineering, and we welcome contributions of all kinds.
+Thank you for your interest! AI PowerTools is a massive undertaking (60+ components) and requires strict discipline to maintain quality and composability.
 
-## 🛠️ Development Setup
+## 🌿 Branching Strategy
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/[your-username]/ai-powertools.git
-    cd ai-powertools
-    ```
-2.  **Create a virtual environment:**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
-3.  **Install development dependencies:**
-    ```bash
-    pip install -e ".[dev]"
-    ```
+We use a modified **Feature-Flow** strategy:
 
-## 📜 Pull Request Guidelines
+- **`master` / `main`**: Always stable, production-ready.
+- **`develop`**: Integration branch for the current milestone.
+- **`feature/[component-name]`**: Dedicated branch for implementing a specific PowerTools component (e.g., `feature/memory-manager`).
+- **`fix/[issue-number]`**: Short-lived branches for bug fixes.
+- **`research/[topic]`**: Branches for exploration and R&D (e.g., `research/mcp-integration`).
 
-1.  **Branching:** Create a feature branch for your changes (`feature/your-component-name`).
-2.  **Testing:** Ensure all tests pass and your new code has at least 95% test coverage.
-3.  **Documentation:** Update relevant documents (README, ROADMAP, ARCHITECTURE) and add docstrings to new functions/classes.
-4.  **Style:** Follow PEP 8 guidelines. We use `black` and `ruff` for formatting.
+## 🔄 Development Handover Rules
 
-## 🏗️ Adding a New Component
+Since multiple contributors (human and AI) work on this project, handovers must be explicit:
 
-If you want to add a new component from the roadmap (or a new idea):
+### 1. The "Work-in-Progress" (WIP) State
+- Every session must end with a commit to the feature branch.
+- If the task is incomplete, the commit message must start with `WIP: [description]`.
+- A temporary "Handover Note" should be added to the project's internal tracking (or a comment on the PR).
 
-1.  Identify the appropriate Tier (Foundation, Tool, or Orchestrator).
-2.  Follow the directory structure in `src/powertools/`.
-3.  Implement the core logic, provider interfaces (if applicable), and unit tests.
-4.  Add a usage example in the `examples/` directory.
+### 2. The "Handover Checkpoint"
+Before handing over to another contributor:
+- [ ] **Tests Pass**: `pytest` must pass.
+- [ ] **Linting**: `ruff check .` and `black .` must pass.
+- [ ] **Documentation**: The `CHANGELOG.md` must be updated with a `[Unreleased]` section.
+- [ ] **Status Update**: Update the status in `RESEARCH_LANDSCAPE.md` for the relevant component.
 
-## 🐞 Reporting Issues
+### 3. AI-to-Human Handover
+If an AI agent completes a task:
+- It MUST provide a summary of technical decisions made.
+- It MUST list any new dependencies added.
+- It MUST provide a "What's Next" section for the human reviewer.
 
-Please use the GitHub Issue templates to report bugs or request new features.
+## 🐙 Git & GitHub Hygiene
+
+### 1. Commit Messages
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat: [component] ...`
+- `fix: [issue] ...`
+- `docs: [file] ...`
+- `refactor: [module] ...`
+
+### 2. PR Review Standards
+- **Composability Check**: Does this component remain useful if other components are removed?
+- **Dependency Minimization**: Avoid adding heavy dependencies unless absolutely necessary.
+- **Type Safety**: All new code must use Python type hints and pass `mypy`.
+
+### 3. Keeping Sync
+- Always `git pull --rebase origin master` before starting work.
+- Squash-merge feature branches into `master` to keep a clean history.
+
+## 🏗️ Technical Best Practices
+
+- **Modular Design**: One component = one package in `src/powertools/`.
+- **Provider Agnostic**: Use the `Abstraction Layer` (#18) interface for all LLM calls.
+- **Async First**: Use `asyncio` for all I/O bound operations (API calls, DB access).
+- **Comprehensive Testing**: Target 95% line coverage.
 
 ---
 *Stay Power-ful!* 🚀

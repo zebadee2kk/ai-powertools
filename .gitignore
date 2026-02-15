@@ -102,6 +102,4 @@ venv.bak/
 .vscode/
 
 # Project specific
-lodestar_*
-AI_POWERTOOLS_STRATEGIC_PLAN.md
-AI_POWERTOOLS_PHASE1_DETAILED.md
+# (Planning and Lodestar archive docs are now allowed in the repo)

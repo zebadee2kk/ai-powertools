@@ -1,6 +1,24 @@
+# Core Foundations
 pydantic>=2.0.0
 httpx>=0.24.0
 python-dotenv>=1.0.0
 asyncio>=3.4.3
+loguru>=0.7.0
+
+# Cost & Token Tracking
+tiktoken>=0.5.0
+
+# LLM Abstraction & Tools
+litellm>=1.20.0
+instructor>=1.0.0
+
+# Memory & Persistence
+chromadb>=0.4.0
+sqlalchemy>=2.0.0
+
+# Testing & Quality
 pytest>=7.0.0
 pytest-asyncio>=0.21.0
+ruff>=0.1.0
+black>=23.0.0
+mypy>=1.5.0
