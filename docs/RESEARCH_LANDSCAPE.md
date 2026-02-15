@@ -748,9 +748,179 @@ Estimate how long a request will take before sending it. Critical for user-facin
 
 ---
 
+---
+
+## 🪩 REFERENCE APPLICATION: whoamiAI (Personal AI Mirror)
+
+A **full reference application** built on top of AI PowerTools that demonstrates the toolkit in action. This is both a useful standalone product AND a showcase for the components above.
+
+**Concept:** An open-source, privacy-first system that ingests your AI conversation history (ChatGPT, Claude, Gemini, etc.), analyses your communication style, skills, and knowledge, and creates a local "AI mirror" — a searchable, queryable version of your AI interactions.
+
+**Repo:** `whoamiAI` (template repo for easy forking)
+**Privacy Model:** Zero data leaves your machine. All personal data is `.gitignore`d. Framework is public, data is private.
+
+### Component Breakdown
+
+The whoamiAI application decomposes into 10 distinct modules, each of which maps to PowerTools components:
+
+#### W1. Export Ingestion Pipeline
+
+Parse and normalise AI conversation exports from multiple providers.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **ChatGPT Ingestion** | Parse OpenAI export ZIP (conversations.json) | Provider Plugin System |
+| **Claude Ingestion** | Parse Anthropic export format | Provider Plugin System |
+| **Gemini Ingestion** | Parse Google AI export | Provider Plugin System |
+| **Custom Ingestion** | Plugin architecture for any AI provider | Provider Plugin System |
+| **Deduplication** | Detect and merge duplicate conversations | Semantic Cache (similarity) |
+| **Incremental Updates** | Only process new conversations since last run | Session Manager (state tracking) |
+
+```python
+from whoamiai.ingest import ExportIngester
+
+ingester = ExportIngester(data_dir="./data/raw/")
+ingester.register_provider("chatgpt", ChatGPTProvider())
+ingester.register_provider("claude", ClaudeProvider())
+result = await ingester.run()  # → Normalised conversations in ./data/processed/
+```
+
+#### W2. Conversation Normaliser
+
+Transform all provider-specific formats into a unified conversation schema.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **Unified Schema** | Common format: messages, timestamps, metadata, tokens | Output Validator (Pydantic) |
+| **Timestamp Normalisation** | All timestamps to UTC ISO 8601 | Sanitisation Layer |
+| **Encoding Cleanup** | Fix emoji, Unicode, control characters | Sanitisation Layer |
+| **Metadata Enrichment** | Add token counts, model used, conversation topic | Cost Tracker, Complexity Scorer |
+
+#### W3. Style Profiler
+
+Analyse your writing style, tone, vocabulary, and communication patterns across all conversations.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **Vocabulary Analysis** | Word frequency, reading level, jargon detection | LLM Router (local model) |
+| **Tone Mapping** | Formal/informal, technical/casual, emotional range | Consensus Engine (multi-model) |
+| **Communication Patterns** | How you ask questions, give instructions, debug | RISEN Prompt Builder |
+| **Style Guide Generation** | Generate a reusable "write like me" prompt | Prompt Manager |
+| **Temporal Trends** | How your style has evolved over time | Memory Manager (episodic) |
+
+#### W4. Skills & Knowledge Extractor
+
+Mine your conversation history to build a map of your skills, expertise, and knowledge areas.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **Topic Clustering** | Group conversations by subject area | Embedding Pipeline |
+| **Skill Identification** | Extract technologies, tools, domains you discuss | LLM Research Wrapper |
+| **Expertise Scoring** | Rate depth of knowledge per topic (beginner → expert) | Evaluation Suite |
+| **Knowledge Gaps** | Identify areas where you frequently ask basic questions | Fact Checker |
+| **Learning Trajectory** | Track how your knowledge has grown over time | Memory Manager (semantic) |
+
+#### W5. Local RAG Server
+
+A local API/UI that lets you query your own conversation history using retrieval-augmented generation.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **Vector Search** | Semantic search across all conversations | Embedding Pipeline, Semantic Cache |
+| **Conversational RAG** | Ask questions about your past interactions | LLM Router (local-only mode) |
+| **Source Attribution** | Every answer links back to specific conversations | Fact Checker (grounding) |
+| **FastAPI Backend** | REST API at localhost:8000 | Abstraction Layer |
+| **Streamlit UI** | Simple web interface for browsing and querying | — |
+
+```python
+# Query your own AI history
+result = await rag.query("What approach did I use for database migrations last month?")
+# → Returns answer + links to original ChatGPT conversations
+```
+
+#### W6. PII Redaction Engine
+
+Aggressive privacy protection built into the ingestion pipeline.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **Regex-Based Detection** | Emails, phone numbers, SSNs, credit cards | Privacy Layer |
+| **NER-Based Detection** | Names, addresses, organisations using local NER model | Privacy Layer |
+| **Secret Scanning** | API keys, tokens, passwords in code snippets | Privacy Layer |
+| **Reversible Masking** | Replace with placeholders, restore if needed | Privacy Layer |
+| **Pre-Commit Hook** | Scan staged files for accidental data leaks | Dev Practices Engine |
+
+#### W7. Profile Generator
+
+Generate comprehensive "who am I" documents from the analysis.
+
+| Output | Description | PowerTools Component Used |
+|--------|-------------|---------------------------|
+| **whoami_profile.md** | Full profile: skills, style, expertise areas | Orchestration Layer (multi-step) |
+| **style_guide.md** | Reusable prompt for "write like me" | RISEN Prompt Builder |
+| **skills_matrix.json** | Structured skills data for programmatic use | Output Validator |
+| **knowledge_graph.html** | Visual map of topics and connections | — |
+| **resume_draft.md** | AI-generated resume from your demonstrated skills | LLM Research Wrapper |
+
+#### W8. Provider Plugin System
+
+Extensible architecture for adding new AI export sources.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **Plugin Interface** | Standard `BaseProvider` class to implement | Abstraction Layer |
+| **Auto-Discovery** | Drop a `.py` file in `providers/`, auto-registered | — |
+| **Schema Validation** | Validate plugin output against conversation schema | Output Validator |
+| **Export Guides** | Per-provider docs on how to export data | Dev Practices Engine |
+
+#### W9. Scheduled Pipeline Runner
+
+Automate regular ingestion and analysis updates.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **Cron Integration** | Schedule runs via cron/systemd | Task Scheduler |
+| **Incremental Processing** | Only process new data since last run | Session Manager |
+| **Change Detection** | Alert when profile/skills change significantly | Model Health Monitor |
+| **Makefile Shortcuts** | `make ingest`, `make analyze`, `make serve` | — |
+
+#### W10. Self-Hosted Stack
+
+Docker-based deployment for the full system.
+
+| Feature | Description | PowerTools Component Used |
+|---------|-------------|---------------------------|
+| **Docker Compose** | Ollama + ChromaDB + FastAPI in one stack | Air-Gapped AI Brain |
+| **Volume Mounts** | Data persisted on host, never in container images | Privacy Layer |
+| **Offline Mode** | Entire stack works without internet | Air-Gapped AI Brain |
+| **Resource Management** | CPU/GPU allocation for local models | — |
+
+### whoamiAI → PowerTools Mapping
+
+This is why whoamiAI is the **perfect reference application** — it exercises almost every PowerTools component:
+
+```
+whoamiAI Component          →  PowerTools Components Used
+────────────────────────────  ──────────────────────────────────
+Export Ingestion             →  Provider Plugin, Session Manager
+Conversation Normaliser      →  Output Validator, Sanitisation Layer
+Style Profiler               →  LLM Router, Consensus Engine, Prompt Builder
+Skills Extractor             →  Embedding Pipeline, Evaluation Suite
+Local RAG Server             →  LLM Router, Semantic Cache, Fact Checker
+PII Redaction                →  Privacy Layer
+Profile Generator            →  Orchestration Layer, RISEN Builder
+Plugin System                →  Abstraction Layer, Output Validator
+Scheduled Pipelines          →  Task Scheduler, Session Manager
+Self-Hosted Stack            →  Air-Gapped AI Brain, Privacy Layer
+```
+
+**16 out of 42 PowerTools components used in a single application.** This makes it the ideal "dogfood" project.
+
+---
+
 ## 💡 CONSOLIDATED COMPONENT IDEAS
 
-**Total: 42 components across 5 tiers**
+**Total: 52 components across 6 tiers**
 
 ### Tier 0: Meta-Tools (Build the Builder)
 
@@ -818,6 +988,21 @@ Estimate how long a request will take before sending it. Critical for user-facin
 | 40 | **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
 | 41 | **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
 | 42 | **Air-Gapped AI Brain** | 🟡 Medium | Fully offline, self-contained AI system with local models |
+
+### Tier 5: Reference Applications
+
+| # | Component | Priority | Description |
+|---|-----------|----------|-------------|
+| 43 | **whoamiAI: Export Ingestion** | 🟡 Medium | Multi-provider AI conversation export parsing and normalisation |
+| 44 | **whoamiAI: Conversation Normaliser** | 🟡 Medium | Unified conversation schema with metadata enrichment |
+| 45 | **whoamiAI: Style Profiler** | 🟡 Medium | Writing style, tone, vocabulary, and pattern analysis |
+| 46 | **whoamiAI: Skills Extractor** | 🟡 Medium | Topic clustering, expertise scoring, knowledge gap identification |
+| 47 | **whoamiAI: Local RAG Server** | 🟡 Medium | Searchable, queryable interface over personal AI history |
+| 48 | **whoamiAI: PII Redaction** | 🔴 High | Regex + NER + secret scanning with reversible masking |
+| 49 | **whoamiAI: Profile Generator** | 🟡 Medium | Generate whoami profile, style guide, skills matrix, resume draft |
+| 50 | **whoamiAI: Provider Plugins** | 🟡 Medium | Extensible plugin system for new AI export sources |
+| 51 | **whoamiAI: Scheduled Pipelines** | 🟢 Lower | Cron-based incremental processing and change detection |
+| 52 | **whoamiAI: Self-Hosted Stack** | 🟢 Lower | Docker Compose with Ollama + ChromaDB + FastAPI |
 
 ---
 
