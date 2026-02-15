@@ -750,6 +750,178 @@ Estimate how long a request will take before sending it. Critical for user-facin
 
 ---
 
+## 🔬 EXTENDED PROJECT ANALYSIS (25+ Projects)
+
+Detailed analysis of competing and complementary projects, grouped by category, with component ideas inspired by each.
+
+### Category A: AI Coding Assistants
+
+| # | Project | Stars | Key Innovation | Inspiration for PowerTools |
+|---|---------|-------|---------------|---------------------------|
+| 1 | **[wcgw](https://github.com/rusiaaman/wcgw)** | 641 | MCP-native shell/coding agent with context save/resume, architect/code-writer modes, syntax checking on edits | **Context Checkpointing** — save task state for knowledge transfer or resume later |
+| 2 | **Continue** | 15K+ | Model-agnostic IDE assistant, works with any LLM | Validates our **Abstraction Layer** approach |
+| 3 | **Cursor** | N/A | Full IDE with AI, $20/month | Shows market appetite for premium AI tooling |
+| 4 | **Cody (Sourcegraph)** | N/A | Codebase understanding specialist | **Codebase Indexer** — understand and navigate large codebases for context |
+| 5 | **Tabnine** | N/A | Privacy-focused, supports all IDEs | Validates our **Privacy Layer** + local-first approach |
+
+#### New Component Ideas from Category A
+
+**36A. Context Save & Resume System**
+Inspired by wcgw's `ContextSave` tool — save project context, active files, and task state into a portable checkpoint that can be resumed later or transferred to another AI session.
+
+| Feature | Description |
+|---------|-------------|
+| **Task Checkpointing** | Save current task state (files read, decisions made, progress) |
+| **Knowledge Transfer** | Export context for another AI agent to continue work |
+| **Session Resume** | Resume interrupted tasks from exactly where you left off |
+| **Context Compression** | Intelligently compress saved context to minimise storage |
+
+**37A. Agent Mode System**
+Inspired by wcgw's architect/code-writer/full-access modes — configurable agent behaviour profiles.
+
+| Mode | Permissions | Use Case |
+|------|------------|----------|
+| **Architect** | Read-only, planning, no file edits | Design before implementation |
+| **Code Writer** | Scoped file editing, tests, commits | Focused implementation |
+| **Full Access** | Unrestricted shell, file, network access | Power user mode |
+| **Review** | Read-only, can comment/annotate | Code review and analysis |
+| **Research** | Read + web access, no local modifications | Investigation and learning |
+
+### Category B: Developer Automation
+
+| # | Project | Stars | Key Innovation | Inspiration for PowerTools |
+|---|---------|-------|---------------|---------------------------|
+| 6 | **[Taipy](https://github.com/Avaiga/taipy)** | 19K+ | Python data/AI → production web apps with pipeline orchestration | **AI App Builder** — generate dashboards/UIs from AI pipelines |
+| 7 | **[Posting](https://github.com/darrenburns/posting)** | 11K+ | Modern terminal API client | Good TUI design patterns for our CLI tools |
+| 8 | **[claude-code-plugins](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)** | 1.4K | 1,500+ auto-activating agent skills with categories (DevOps, Security, Data, Frontend, Testing, Docs) | **Skill/Plugin System** — auto-activating capabilities |
+| 9 | **[lazy-bird](https://github.com/yusufkaraaslan/lazy-bird)** | 204 | Autonomous dev: creates issues → Claude processes → runs tests → creates PRs while you sleep | **Autonomous Task Runner** — fire-and-forget AI development tasks |
+| 10 | **[git-delete-merged-branches](https://github.com/hartwork/git-delete-merged-branches)** | 906 | Git housekeeping automation | Part of **Dev Practices Engine** |
+
+#### New Component Ideas from Category B
+
+**38B. Skill Auto-Activation System**
+Inspired by claude-code-plugins — instead of CLI commands, skills detect when they're needed and activate automatically.
+
+| Feature | Description |
+|---------|-------------|
+| **Context Detection** | Analyse current task and auto-activate relevant skills |
+| **Skill Registry** | Categorised library of capabilities (DevOps, Security, Testing, etc.) |
+| **Permission Controls** | Fine-grained control over what each skill can do |
+| **Skill Composition** | Chain multiple skills together for complex tasks |
+| **Community Marketplace** | Discover and share skills with other PowerTools users |
+
+**39B. Autonomous Task Processor**
+Inspired by lazy-bird's "create issues, come back to PRs" workflow — fully autonomous AI task execution.
+
+| Feature | Description |
+|---------|-------------|
+| **Issue-Driven Tasks** | Monitor GitHub issues with "ready" label, process autonomously |
+| **Test-First Execution** | Run framework tests, retry on failure, only PR if passing |
+| **Safe Git Workflow** | Isolated worktrees, automatic PRs, never pushes to main |
+| **Cost Controls** | Daily cost limits, per-project concurrency limits |
+| **Progress Dashboard** | Real-time monitoring of autonomous task execution |
+| **Multi-Project** | Monitor and process tasks across multiple repos simultaneously |
+
+**40B. AI-to-Dashboard Generator**
+Inspired by Taipy — turn any AI pipeline into a production web dashboard automatically.
+
+| Feature | Description |
+|---------|-------------|
+| **Pipeline Visualisation** | Auto-generate visual DAGs from Orchestration Layer pipelines |
+| **Cost Dashboard** | Real-time cost tracking with charts and alerts |
+| **Model Comparison UI** | Side-by-side model output comparison |
+| **One-Click Deploy** | Generate standalone web apps from AI pipelines |
+
+### Category C: LLM Proxies & Routing
+
+| # | Project | Stars | Key Innovation | Inspiration for PowerTools |
+|---|---------|-------|---------------|---------------------------|
+| 11 | **Portkey** | N/A | A/B testing, weighted routing, automatic failover, guardrails | **A/B Testing Framework** for models and prompts |
+| 12 | **Cloudflare AI Gateway** | N/A | Edge-based caching and traffic control | Validates our **Semantic Cache** approach |
+| 13 | **OpenRouter** | N/A | Multi-model marketplace with unified API | Validates our **Abstraction Layer** design |
+| 14 | **Helicone** | N/A | Logging/observability focused proxy | Validates our **Structured Logger** approach |
+| 15 | **Langfuse** | 8K+ | Full observability platform with prompt management | Already planned as integration target |
+
+#### New Component Ideas from Category C
+
+**41C. A/B Testing Framework**
+Inspired by Portkey — systematically compare models, prompts, and configurations.
+
+| Feature | Description |
+|---------|-------------|
+| **Model A/B Tests** | Split traffic between models, measure quality/cost/latency |
+| **Prompt A/B Tests** | Test prompt variations with statistical significance |
+| **Weighted Routing** | Gradually shift traffic from old to new models (canary deployment) |
+| **Auto-Winner Selection** | Automatically promote the winning variant |
+| **Experiment Dashboard** | Visualise experiments with confidence intervals |
+
+**42C. AI Gateway (Proxy Mode)**
+Inspired by Portkey/Cloudflare Workers AI — serve PowerTools as a drop-in HTTP proxy for any AI application.
+
+| Feature | Description |
+|---------|-------------|
+| **HTTP Proxy** | Drop-in replacement for `api.openai.com` — redirect existing apps through PowerTools |
+| **Request Logging** | Log every request/response for observability |
+| **Guardrails** | Apply Prompt Guard and Privacy Layer to all traffic |
+| **Caching** | Semantic Cache as a transparent proxy layer |
+| **Rate Limiting** | Aggregate rate limits across multiple backend apps |
+
+### Category D: Privacy-First AI
+
+| # | Project | Stars | Key Innovation | Inspiration for PowerTools |
+|---|---------|-------|---------------|---------------------------|
+| 16 | **Clawdbot** | 10.2K | Privacy-first personal assistant executing real automation locally | Validates our **Air-Gapped Brain** concept |
+| 17 | **Lumo (Proton)** | N/A | Zero-access encryption, GDPR compliance, no-logs policy | **Zero-Access Architecture** — mathematical privacy guarantees |
+| 18 | **CodeGeeX** | N/A | Open-source privacy-focused coding assistant | Validates local-first approach |
+| 19 | **FauxPilot** | N/A | Self-hosted Copilot alternative | Validates self-hosting demand |
+| 20 | **Tabby** | N/A | Local deployment AI coding assistant | Validates privacy-first coding tools market |
+
+#### New Component Ideas from Category D
+
+**43D. Zero-Access Encryption Layer**
+Inspired by Proton's Lumo — encrypt data so that even the system processing it can't read the plaintext.
+
+| Feature | Description |
+|---------|-------------|
+| **End-to-End Encryption** | Encrypt memories, logs, and data at rest with user-held keys |
+| **Zero-Knowledge Proofs** | Verify data properties without revealing content |
+| **Encrypted Search** | Search over encrypted data using homomorphic techniques |
+| **Key Management** | Secure key generation, rotation, and backup |
+| **GDPR Compliance Toolkit** | Automated data subject access requests, right to forget |
+
+**44D. Data Sovereignty Manager**
+Inspired by privacy-first trends across all projects — ensure data stays where it's legally required.
+
+| Feature | Description |
+|---------|-------------|
+| **Geo-Routing** | Route data to providers based on data residency requirements |
+| **Data Classification** | Auto-classify data sensitivity (public, internal, confidential, restricted) |
+| **Compliance Reports** | Generate GDPR, HIPAA, SOC 2 compliance documentation |
+| **Data Lineage Tracking** | Track where every piece of data has been sent |
+| **Retention Automation** | Auto-delete data based on retention policies |
+
+### Category E: Emerging Tools
+
+| # | Project | Stars | Key Innovation | Inspiration for PowerTools |
+|---|---------|-------|---------------|---------------------------|
+| 21 | **Replit Agent 3** | N/A | Browser-based dev with autonomous debugging loops | **Self-Healing Pipelines** — auto-fix and retry |
+| 22 | **GitHub Copilot** | N/A | Multi-model support (GPT-4o, Claude 3.5, Gemini 1.5) | Validates multi-model approach |
+| 23 | **Windsurf** | N/A | Free with own API keys | Validates BYOK (bring your own key) model |
+| 24 | **Cline** | N/A | Open-source AI assistant | Validates open-source AI tooling demand |
+| 25 | **dns-benchmark-tool** | N/A | Performance testing with validation | Pattern for **Model Benchmark Suite** |
+
+### Suggested Reference Projects (from analysis)
+
+These 5 project concepts emerged from synthesising all 25+ projects:
+
+| # | Project | Description | PowerTools Components It Would Exercise |
+|---|---------|-------------|-----------------------------------------|
+| 1 | **Multi-Agent Dev Orchestrator (MADO)** | Specialised agents for code gen, testing, docs, security review with shared memory | Agent Framework, Memory Manager, Consensus Engine, Cost Tracker |
+| 2 | **Privacy-First LLM Proxy** | Enhanced LiteLLM with automatic sensitivity detection and tiered routing | Privacy Layer, Least-Cost Router, Sanitisation Layer, Audit Trail |
+| 3 | **DevMetrics Dashboard** | Track developer productivity, cost per feature, model performance, ROI | Cost Tracker, Structured Logger, AI-to-Dashboard Generator |
+| 4 | **Hybrid Code Review System** | AI-first review with human escalation and learning from feedback | Code Reviewer, Consensus Engine, Orchestration Layer, Memory Manager |
+| 5 | **MCP Server Marketplace** | Discover, build, share MCP servers for dev workflows | MCP Server Framework, Skill System, Project Scaffolder |
+
 ---
 
 ## 🪩 REFERENCE APPLICATION: whoamiAI (Personal AI Mirror)
@@ -922,7 +1094,7 @@ Self-Hosted Stack            →  Air-Gapped AI Brain, Privacy Layer
 
 ## 💡 CONSOLIDATED COMPONENT IDEAS
 
-**Total: 52 components across 6 tiers**
+**Total: 61 components across 6 tiers**
 
 ### Tier 0: Meta-Tools (Build the Builder)
 
@@ -982,29 +1154,38 @@ Self-Hosted Stack            →  Air-Gapped AI Brain, Privacy Layer
 | 37 | **Multi-Modal Router** | 🟢 Lower | Route by modality (text, image, audio, code) to specialist models |
 | 38 | **Code Reviewer** | 🟢 Lower | AI-powered PR analysis using Router for model selection |
 | 39 | **Model Health Monitor** | 🟡 Medium | Latency, error rate, quality drift tracking with alerts |
+| 40 | **Context Save & Resume** | 🟡 Medium | Task checkpointing, knowledge transfer, session resume |
+| 41 | **Agent Mode System** | 🟡 Medium | Configurable agent profiles (architect, code-writer, review, research) |
+| 42 | **Skill Auto-Activation** | 🟡 Medium | Context-aware auto-triggering of relevant capabilities |
+| 43 | **A/B Testing Framework** | 🟡 Medium | Model/prompt comparison with statistical significance |
+| 44 | **Zero-Access Encryption** | 🟢 Lower | E2E encryption with user-held keys, encrypted search |
+| 45 | **Data Sovereignty Manager** | 🟢 Lower | Geo-routing, compliance reports, data lineage tracking |
 
 ### Tier 4: Orchestrators & Systems
 
 | # | Component | Priority | Description |
 |---|-----------|----------|-------------|
-| 40 | **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
-| 41 | **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
-| 42 | **Air-Gapped AI Brain** | 🟡 Medium | Fully offline, self-contained AI system with local models |
+| 46 | **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
+| 47 | **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
+| 48 | **Air-Gapped AI Brain** | 🟡 Medium | Fully offline, self-contained AI system with local models |
+| 49 | **Autonomous Task Processor** | 🟡 Medium | Issue-driven autonomous dev with cost controls and safe git |
+| 50 | **AI Gateway (Proxy Mode)** | 🟡 Medium | Drop-in HTTP proxy with caching, guardrails, rate limiting |
+| 51 | **AI-to-Dashboard Generator** | 🟢 Lower | Auto-generate web UIs from AI pipelines |
 
 ### Tier 5: Reference Applications
 
 | # | Component | Priority | Description |
 |---|-----------|----------|-------------|
-| 43 | **whoamiAI: Export Ingestion** | 🟡 Medium | Multi-provider AI conversation export parsing and normalisation |
-| 44 | **whoamiAI: Conversation Normaliser** | 🟡 Medium | Unified conversation schema with metadata enrichment |
-| 45 | **whoamiAI: Style Profiler** | 🟡 Medium | Writing style, tone, vocabulary, and pattern analysis |
-| 46 | **whoamiAI: Skills Extractor** | 🟡 Medium | Topic clustering, expertise scoring, knowledge gap identification |
-| 47 | **whoamiAI: Local RAG Server** | 🟡 Medium | Searchable, queryable interface over personal AI history |
-| 48 | **whoamiAI: PII Redaction** | 🔴 High | Regex + NER + secret scanning with reversible masking |
-| 49 | **whoamiAI: Profile Generator** | 🟡 Medium | Generate whoami profile, style guide, skills matrix, resume draft |
-| 50 | **whoamiAI: Provider Plugins** | 🟡 Medium | Extensible plugin system for new AI export sources |
-| 51 | **whoamiAI: Scheduled Pipelines** | 🟢 Lower | Cron-based incremental processing and change detection |
-| 52 | **whoamiAI: Self-Hosted Stack** | 🟢 Lower | Docker Compose with Ollama + ChromaDB + FastAPI |
+| 52 | **whoamiAI: Export Ingestion** | 🟡 Medium | Multi-provider AI conversation export parsing and normalisation |
+| 53 | **whoamiAI: Conversation Normaliser** | 🟡 Medium | Unified conversation schema with metadata enrichment |
+| 54 | **whoamiAI: Style Profiler** | 🟡 Medium | Writing style, tone, vocabulary, and pattern analysis |
+| 55 | **whoamiAI: Skills Extractor** | 🟡 Medium | Topic clustering, expertise scoring, knowledge gap identification |
+| 56 | **whoamiAI: Local RAG Server** | 🟡 Medium | Searchable, queryable interface over personal AI history |
+| 57 | **whoamiAI: PII Redaction** | 🔴 High | Regex + NER + secret scanning with reversible masking |
+| 58 | **whoamiAI: Profile Generator** | 🟡 Medium | Generate whoami profile, style guide, skills matrix, resume draft |
+| 59 | **whoamiAI: Provider Plugins** | 🟡 Medium | Extensible plugin system for new AI export sources |
+| 60 | **whoamiAI: Scheduled Pipelines** | 🟢 Lower | Cron-based incremental processing and change detection |
+| 61 | **whoamiAI: Self-Hosted Stack** | 🟢 Lower | Docker Compose with Ollama + ChromaDB + FastAPI |
 
 ---
 
