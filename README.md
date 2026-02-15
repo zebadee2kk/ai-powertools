@@ -64,11 +64,13 @@ with CostTracker(budget=5.00) as tracker:
 
 ## 🛠️ Status & Documentation
 
-We are currently tracking **61 component ideas**.
+We are currently tracking **64 component ideas** distilled into **7 Core Modules**.
 
-- 🎯 **[ROADMAP.md](ROADMAP.md)**: High-level vision and 3-month milestones.
-- 🔬 **[docs/RESEARCH_LANDSCAPE.md](./docs/RESEARCH_LANDSCAPE.md)**: Deep-dive research, competitive analysis, and 61 component details.
-- 🧠 **[docs/MEMORY_ARCHITECTURE.md](./docs/MEMORY_ARCHITECTURE.md)**: Detailed spec for the Memory Manager.
+- 🎯 **[ROADMAP.md](ROADMAP.md)**: High-level vision and 4-milestone execution plan.
+- ⛓️ **[docs/BUILD_STRATEGY.md](./docs/BUILD_STRATEGY.md)**: Bootstrapping philosophy and multiplier build order.
+- 📊 **[docs/COMPONENT_MATRIX.md](./docs/COMPONENT_MATRIX.md)**: The 64-to-7 module distillation and complexity analysis.
+- 🔬 **[docs/RESEARCH_LANDSCAPE.md](./docs/RESEARCH_LANDSCAPE.md)**: Deep-dive research, competitive analysis, and all 64 component details.
+- 🧠 **[docs/MEMORY_ARCHITECTURE.md](./docs/MEMORY_ARCHITECTURE.md)**: Detailed spec for the Memory Manager (#25).
 - 🛡️ **[SECURITY.md](SECURITY.md)**: Our privacy-first security protocols.
 - 🤝 **[CONTRIBUTING.md](CONTRIBUTING.md)**: Branching strategy and human/AI handover rules.
 
