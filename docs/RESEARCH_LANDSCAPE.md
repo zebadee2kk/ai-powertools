@@ -318,55 +318,216 @@ report = await researcher.investigate(
 # → Findings are queryable later via memory.recall()
 ```
 
+### 16. RISEN Prompt Builder
+
+Structured prompt engineering using the **RISEN** framework (Role, Instructions, Steps, End Goal, Narrowing). Most developers write prompts ad-hoc. A structured builder enforces quality and repeatability.
+
+| Component | Description |
+|-----------|-------------|
+| **Role** | Define the AI's persona, expertise, and constraints |
+| **Instructions** | Clear, specific directives for the task |
+| **Steps** | Ordered sequence of actions the AI should follow |
+| **End Goal** | The desired outcome, format, and success criteria |
+| **Narrowing** | Constraints, exclusions, and guardrails |
+
+**Why this matters:** Prompt quality is the single biggest factor in LLM output quality, yet most engineers wing it. A builder that enforces structure, stores templates, and tracks which prompts perform best turns prompt engineering from art into engineering.
+
+#### Architecture Concept
+```python
+from powertools.tools.prompts import RISENBuilder
+
+prompt = (RISENBuilder()
+    .role("Senior Python developer with security expertise")
+    .instructions("Review the following code for vulnerabilities")
+    .steps([
+        "Identify all user input entry points",
+        "Check for SQL injection, XSS, and CSRF vulnerabilities",
+        "Suggest fixes with code examples"
+    ])
+    .end_goal("JSON report with severity ratings and fix suggestions")
+    .narrowing("Focus only on security issues, ignore style")
+    .build()
+)
+# → Generates optimised prompt text with consistent structure
+# → Can be versioned, A/B tested, and stored for reuse
+```
+
+### 17. CARE Framework Builder
+
+Another structured prompt framework — **CARE** (Context, Action, Result, Example). Complementary to RISEN, optimised for simpler, task-focused prompts.
+
+| Component | Description |
+|-----------|-------------|
+| **Context** | Background information and situational awareness |
+| **Action** | The specific task to perform |
+| **Result** | Expected output format and quality criteria |
+| **Example** | One or more examples of ideal output (few-shot) |
+
+**Why this matters:** Different tasks suit different frameworks. RISEN is ideal for complex, multi-step tasks. CARE is better for focused, single-action tasks. Offering both (plus custom frameworks) makes our prompt tooling best-in-class.
+
+### 18. Public LLM Research Wrapper
+
+A delegation system where your code can **reach out to another LLM** (via API or local network) to run a specific research or code task, then collect the response asynchronously.
+
+| Feature | Description |
+|---------|-------------|
+| **Task Delegation** | Send a structured task to any LLM endpoint (cloud API, local Ollama, network LLM) |
+| **Async Collection** | Fire-and-forget with callback, or await with timeout |
+| **Multi-LLM Fan-out** | Send the same task to multiple LLMs, compare responses, pick the best |
+| **Result Aggregation** | Merge, rank, or synthesize responses from multiple sources |
+| **Task Queue** | Queue tasks for batch processing during off-peak hours (cost savings) |
+| **Response Validation** | Validate responses against expected schema before accepting |
+
+**Why this matters:** This is the **glue layer** that enables true multi-model collaboration. Your primary AI can delegate sub-tasks to specialist models — use a coding model for code, a reasoning model for analysis, a fast model for summaries — all orchestrated programmatically.
+
+#### Architecture Concept
+```python
+from powertools.tools.delegation import LLMDelegator
+
+delegator = LLMDelegator(router=llm_router)
+
+# Delegate a research task to a cloud model
+result = await delegator.delegate(
+    task="Analyse the top 5 Python web frameworks and compare performance benchmarks",
+    target="openai:gpt-4o",
+    timeout=120,
+    validate_schema=ResearchReport  # Pydantic model
+)
+
+# Fan-out the same task to multiple models
+results = await delegator.fan_out(
+    task="Generate unit tests for this function",
+    targets=["ollama:deepseek-coder", "openai:gpt-4o", "anthropic:claude-3"],
+    strategy="best_of"  # best_of | merge | vote
+)
+```
+
+### 19. Privacy Layer
+
+A comprehensive data protection layer that sits between your application and any LLM provider. Goes beyond simple PII masking.
+
+| Feature | Description |
+|---------|-------------|
+| **PII Detection & Masking** | Detect and mask names, emails, addresses, phone numbers, SSNs, etc. |
+| **Code Secret Scanning** | Strip API keys, tokens, passwords, connection strings from prompts |
+| **Data Classification** | Tag data sensitivity levels (public, internal, confidential, restricted) |
+| **Policy Enforcement** | Rules like "never send confidential data to cloud LLMs" |
+| **Reversible Anonymization** | Replace sensitive data with placeholders, restore in responses |
+| **Audit Trail** | Log what data was sent where, for compliance reporting |
+| **Consent Tracking** | Track data usage consent per user/customer |
+
+**Why this matters:** This is a **legal and compliance necessity**, not just a nice-to-have. GDPR, HIPAA, and SOC 2 all have implications for sending data to third-party AI services. A privacy layer that enforces policy automatically is essential for enterprise adoption.
+
+#### Architecture Concept
+```python
+from powertools.tools.privacy import PrivacyLayer, Policy
+
+privacy = PrivacyLayer(
+    policies=[
+        Policy.no_pii_to_cloud(),
+        Policy.no_secrets_anywhere(),
+        Policy.classify_and_enforce("confidential", allowed_providers=["ollama"])
+    ]
+)
+
+# Wrap the router — privacy layer intercepts all calls
+safe_router = privacy.wrap(llm_router)
+response = await safe_router.route("Analyse customer record: John Smith, john@email.com")
+# → PII automatically masked before sending to cloud
+# → Response has PII placeholders restored
+```
+
+### 20. Air-Gapped AI Brain
+
+A fully offline, self-contained AI system that operates with **zero internet connectivity**. Designed for secure environments, classified work, or privacy-critical applications.
+
+| Feature | Description |
+|---------|-------------|
+| **Offline Model Management** | Manage, update, and swap local models without internet |
+| **Local Knowledge Base** | Vector DB + document store, fully self-contained |
+| **Offline RAG** | Retrieval-augmented generation using only local data |
+| **Portable Brain** | Export/import the entire AI configuration as a single portable archive |
+| **Sneakernet Updates** | Update models and knowledge via USB/removable media |
+| **Local Evaluation** | Benchmark and evaluate models without phoning home |
+| **Multi-Model Orchestration** | Run multiple local models and route between them |
+
+**Why this matters:** There are entire industries (defense, healthcare, finance, government) where data **cannot leave the network**. An air-gapped AI brain that provides full PowerTools functionality without any internet dependency is a unique market position. This also appeals to privacy-conscious individuals and organisations.
+
+#### Architecture Concept
+```python
+from powertools.tools.airgap import AirGappedBrain
+
+brain = AirGappedBrain(
+    models_dir="/opt/models/",
+    knowledge_dir="/opt/knowledge/",
+    config="brain_config.yaml"
+)
+
+# Everything runs locally — zero network calls
+response = await brain.think(
+    "Summarise the latest security audit findings",
+    context_from="local_knowledge"
+)
+
+# Export brain state for transfer to another machine
+brain.export("brain_snapshot_2026-02-15.tar.gz")
+```
+
 ---
 
 ## 💡 CONSOLIDATED COMPONENT IDEAS
 
+**Total: 30+ components across 4 tiers**
+
 ### Tier 0: Meta-Tools (Build the Builder)
 
-| Component | Priority | Description |
-|-----------|----------|-------------|
-| **Project Scaffolder** | 🔴 High | Auto-create GitHub repos with full structure, CI/CD, docs |
-| **Dev Practices Engine** | 🔴 High | Inject best practices, standards, methodologies into any project |
-| **Auto Researcher** | 🟡 Medium | AI-powered research pipeline with knowledge store |
-| **MCP Server Framework** | 🟡 Medium | Expose all PowerTools as MCP-compatible servers |
+| # | Component | Priority | Description |
+|---|-----------|----------|-------------|
+| 1 | **Project Scaffolder** | 🔴 High | Auto-create GitHub repos with full structure, CI/CD, docs |
+| 2 | **Dev Practices Engine** | 🔴 High | Inject best practices, standards, methodologies into any project |
+| 3 | **Auto Researcher** | 🟡 Medium | AI-powered research pipeline with knowledge store |
+| 4 | **MCP Server Framework** | 🟡 Medium | Expose all PowerTools as MCP-compatible servers |
 
-### Tier 1: Foundations (Current Plan + Enhancements)
+### Tier 1: Foundations
 
-| Component | Priority | Description |
-|-----------|----------|-------------|
-| **LLM Router** | ✅ Done | Complexity-based routing with fallbacks |
-| **Token & Cost Tracker** | 🔴 High | Multi-provider tracking with budget enforcement |
-| **Complexity Scorer** | 🔴 High | Rule-based + ML scoring for routing decisions |
-| **Session Manager** | 🔴 High | Persistent conversation state with multi-backend support |
-| **Structured Logger** | 🔴 High | OTel-based logging with Langfuse integration |
-| **Prompt Guard** | 🔴 High | Multi-layer input sanitization and injection defense |
-| **Provider Pricing DB** | 🟡 Medium | Auto-updated model pricing for cost accuracy |
-| **LiteLLM Adapter** | 🟡 Medium | Plug LiteLLM as a provider for 100+ model support |
+| # | Component | Priority | Description |
+|---|-----------|----------|-------------|
+| 5 | **LLM Router** | ✅ Done | Complexity-based routing with fallbacks |
+| 6 | **Token & Cost Tracker** | 🔴 High | Multi-provider tracking with budget enforcement |
+| 7 | **Complexity Scorer** | 🔴 High | Rule-based + ML scoring for routing decisions |
+| 8 | **Session Manager** | 🔴 High | Persistent conversation state with multi-backend support |
+| 9 | **Structured Logger** | 🔴 High | OTel-based logging with Langfuse integration |
+| 10 | **Prompt Guard** | 🔴 High | Multi-layer input sanitization and injection defense |
+| 11 | **Privacy Layer** | 🔴 High | PII masking, secret scanning, policy enforcement, audit trail |
+| 12 | **Provider Pricing DB** | 🟡 Medium | Auto-updated model pricing for cost accuracy |
+| 13 | **LiteLLM Adapter** | 🟡 Medium | Plug LiteLLM as a provider for 100+ model support |
 
-### Tier 2: Tools (Enhanced)
+### Tier 2: Tools
 
-| Component | Priority | Description |
-|-----------|----------|-------------|
-| **Memory Manager** | 🔴 High | Multi-type memory (episodic, semantic, procedural, working) |
-| **Semantic Cache** | 🔴 High | Vector-similarity caching layer for the Router |
-| **Output Validator** | 🔴 High | Provider-agnostic Pydantic schema enforcement with retries |
-| **Prompt Manager** | 🟡 Medium | Version control, A/B testing, templates for prompts |
-| **Context Window Manager** | 🟡 Medium | Smart chunking, compression, context packing |
-| **Data Anonymizer** | 🟡 Medium | PII detection and masking before cloud LLM calls |
-| **Fact Checker** | 🟡 Medium | Inline hallucination detection with confidence scores |
-| **Evaluation Suite** | 🟡 Medium | Automated quality scoring (factuality, relevance, toxicity) |
-| **Code Reviewer** | 🟢 Lower | AI-powered PR analysis using Router for model selection |
+| # | Component | Priority | Description |
+|---|-----------|----------|-------------|
+| 14 | **Memory Manager** | 🔴 High | Multi-type memory (episodic, semantic, procedural, working, long-term) |
+| 15 | **Semantic Cache** | 🔴 High | Vector-similarity caching layer for the Router |
+| 16 | **Output Validator** | 🔴 High | Provider-agnostic Pydantic schema enforcement with retries |
+| 17 | **RISEN Prompt Builder** | 🔴 High | Structured prompt engineering (Role, Instructions, Steps, End Goal, Narrowing) |
+| 18 | **CARE Framework Builder** | 🟡 Medium | Structured prompt engineering (Context, Action, Result, Example) |
+| 19 | **LLM Research Wrapper** | 🔴 High | Delegate tasks to external LLMs, fan-out, compare, aggregate |
+| 20 | **Prompt Manager** | 🟡 Medium | Version control, A/B testing, templates for prompts |
+| 21 | **Context Window Manager** | 🟡 Medium | Smart chunking, compression, context packing |
+| 22 | **Fact Checker** | 🟡 Medium | Inline hallucination detection with confidence scores |
+| 23 | **Evaluation Suite** | 🟡 Medium | Automated quality scoring (factuality, relevance, toxicity) |
+| 24 | **Code Reviewer** | 🟢 Lower | AI-powered PR analysis using Router for model selection |
 
-### Tier 3: Orchestrators (Future)
+### Tier 3: Orchestrators & Systems
 
-| Component | Priority | Description |
-|-----------|----------|-------------|
-| **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
-| **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
-| **Task Scheduler** | 🟢 Lower | Cron-like scheduling for AI workflows |
-| **Red Team Framework** | 🟢 Lower | Automated adversarial testing for LLM apps |
-| **Model Benchmark Suite** | 🟢 Lower | Compare models on cost, quality, latency for specific tasks |
+| # | Component | Priority | Description |
+|---|-----------|----------|-------------|
+| 25 | **Workflow Engine** | 🟡 Medium | YAML-defined DAG pipelines with cost tracking per step |
+| 26 | **Agent Framework** | 🟡 Medium | Multi-agent orchestration with role assignment |
+| 27 | **Air-Gapped AI Brain** | 🟡 Medium | Fully offline, self-contained AI system with local models |
+| 28 | **Task Scheduler** | 🟢 Lower | Cron-like scheduling for AI workflows |
+| 29 | **Red Team Framework** | 🟢 Lower | Automated adversarial testing for LLM apps |
+| 30 | **Model Benchmark Suite** | 🟢 Lower | Compare models on cost, quality, latency for specific tasks |
 
 ---
 
