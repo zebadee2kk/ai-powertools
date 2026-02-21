@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
-from powertools.core.llm_router.router import LLMRouter
-from powertools.core.llm_router.base import LLMProvider
-from powertools.core.llm_router.models import LLMResponse, ProviderType
+from powertools.router.llm_router.router import LLMRouter
+from powertools.router.llm_router.base import LLMProvider
+from powertools.router.llm_router.models import LLMResponse, ProviderType
 
 @pytest.fixture
 def mock_local_provider():
