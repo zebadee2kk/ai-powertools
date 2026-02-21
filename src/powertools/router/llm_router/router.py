@@ -1,14 +1,19 @@
 import asyncio
 import time
-from typing import List, Dict, Optional, Any
+from typing import TYPE_CHECKING, List, Dict, Optional, Any
 from .base import LLMProvider
 from .models import LLMResponse, ProviderType, RoutingDecision
+
+if TYPE_CHECKING:
+    from powertools.model_registry import ModelRegistry
+
 
 class LLMRouter:
     def __init__(self):
         self._providers: Dict[str, LLMProvider] = {}
         self._default_local_model: Optional[str] = None
         self._default_cloud_model: Optional[str] = None
+        self._model_registry: Optional["ModelRegistry"] = None
 
     def register_provider(self, provider: LLMProvider):
         """Register a new LLM provider."""
@@ -19,11 +24,21 @@ class LLMRouter:
         self._default_local_model = local_model
         self._default_cloud_model = cloud_model
 
+    def set_model_registry(self, registry: "ModelRegistry") -> None:
+        """Attach a :class:`~powertools.model_registry.ModelRegistry` for tier-aware routing.
+
+        When a registry is attached and a *task_type* is passed to :meth:`route`,
+        the router will look up the best accredited model from the registry before
+        falling back to the default complexity-based logic.
+        """
+        self._model_registry = registry
+
     async def route(
-        self, 
-        task: str, 
+        self,
+        task: str,
         complexity: float = 0.0,
         required_model: Optional[str] = None,
+        task_type: Optional[str] = None,
         **kwargs
     ) -> LLMResponse:
         """
@@ -33,11 +48,15 @@ class LLMRouter:
             task: The prompt or task description.
             complexity: Score from 0.0 to 1.0 indicating task difficulty.
             required_model: If specified, bypasses routing logic to use this model.
+            task_type: Optional task category (e.g. ``"coding"``, ``"summarise"``).
+                When a :class:`~powertools.model_registry.ModelRegistry` is attached
+                via :meth:`set_model_registry`, the router uses this to perform
+                tier-aware model selection before falling back to complexity routing.
         """
         start_time = time.perf_counter()
         
         # 1. Decide which provider and model to use
-        decision = await self._make_routing_decision(task, complexity, required_model)
+        decision = await self._make_routing_decision(task, complexity, required_model, task_type)
         
         provider = self._providers.get(decision.provider_id)
         if not provider:
@@ -56,7 +75,8 @@ class LLMRouter:
         self, 
         task: str, 
         complexity: float, 
-        required_model: Optional[str]
+        required_model: Optional[str],
+        task_type: Optional[str] = None,
     ) -> RoutingDecision:
         """
         Logic to choose the best provider/model.
@@ -71,6 +91,23 @@ class LLMRouter:
                         model=required_model,
                         reason="Explicit model requested"
                     )
+
+        # Tier-aware routing via the ModelRegistry
+        if task_type and self._model_registry is not None:
+            candidates = self._model_registry.get_models_for_task(task_type)
+            for accred in candidates:
+                provider_name, model_name = accred.model_full_name.split(":", 1)
+                for p_id, p in self._providers.items():
+                    if p_id == provider_name and model_name in p.get_supported_models():
+                        if await p.is_healthy():
+                            return RoutingDecision(
+                                provider_id=p_id,
+                                model=model_name,
+                                reason=(
+                                    f"Tier-{accred.tier.value} model selected for "
+                                    f"task_type='{task_type}'"
+                                ),
+                            )
 
         # Basic complexity-based routing
         if complexity < 0.5 and self._default_local_model:
