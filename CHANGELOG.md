@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2026-02-28
+
+### Added
+- **Model Intelligence Framework**: Model discovery, benchmarking, tiering, and tier-aware routing (#4)
+  - `src/powertools/model_registry/` - Complete model registry system
+  - Dynamic model discovery for local and cloud providers
+  - Performance benchmarking and intelligent tiering
+  - Enhanced router with tier-aware selection
+- **Security Module**: Prompt safety helpers to prevent secret leakage
+  - `src/powertools/security/prompts.py` - Secret detection and sanitization
+  - Pattern-based and ML-based leak prevention
+
+### Changed
+- **Branch Strategy**: Reconciled main/master divergence - `master` is now the single default branch
+  - Security features from `main` branch merged into `master`
+  - `main` branch archived as `backup/main-diverged` for historical reference
+
 ## [1.0.0-research] - 2026-02-15
 
 ### Added
