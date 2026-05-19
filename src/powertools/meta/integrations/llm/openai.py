@@ -5,8 +5,8 @@ from ...core.llm_router.base import LLMProvider
 from ...core.llm_router.models import LLMResponse, ProviderType
 
 class OpenAIProvider(LLMProvider):
-    def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+    def __init__(self, api_credential: Optional[str] = None):
+        self.api_credential = api_credential or os.getenv("OPENAI_API_KEY")
         self.base_url = "https://api.openai.com/v1"
         self._models = ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "gpt-4o"]
 
@@ -19,13 +19,13 @@ class OpenAIProvider(LLMProvider):
         return ProviderType.CLOUD
 
     async def generate(self, prompt: str, model: str, **kwargs) -> LLMResponse:
-        if not self.api_key:
-            raise ValueError("OpenAI API key not provided.")
+        if not self.api_credential:
+            raise ValueError("OpenAI API credential not provided.")
 
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
                 f"{self.base_url}/chat/completions",
-                headers={"Authorization": f"Bearer {self.api_key}"},
+                headers={"Authorization": f"Bearer {self.api_credential}"},
                 json={
                     "model": model,
                     "messages": [{"role": "user", "content": prompt}],
@@ -51,9 +51,9 @@ class OpenAIProvider(LLMProvider):
             )
 
     async def is_healthy(self) -> bool:
-        # For cloud providers, 'healthy' usually means API key is present
+        # For cloud providers, 'healthy' usually means API credential is present
         # We could also do a ping, but this is simpler for now
-        return bool(self.api_key)
+        return bool(self.api_credential)
 
     def get_supported_models(self) -> List[str]:
         return self._models
