@@ -23,12 +23,12 @@ def _get_ollama_models(base_url: str = "http://localhost:11434") -> List[ModelEn
 
 
 def _get_openai_compatible_models(
-    endpoint: str, provider_name: str, api_key: Optional[str] = None
+    endpoint: str, provider_name: str, api_credential: Optional[str] = None
 ) -> List[ModelEntry]:
     """Discover models from any OpenAI-compatible /v1/models endpoint (e.g. LM Studio, vLLM)."""
     headers = {}
-    if api_key:
-        headers["Authorization"] = f"Bearer {api_key}"
+    if api_credential:
+        headers["Authorization"] = f"Bearer {api_credential}"
     try:
         with httpx.Client(timeout=3.0) as client:
             response = client.get(f"{endpoint}/v1/models", headers=headers)
@@ -52,7 +52,7 @@ def discover_models(
     Args:
         ollama_url: Base URL of the local Ollama instance.
         extra_endpoints: List of dicts with keys ``endpoint``, ``name``,
-            and optionally ``api_key`` for additional OpenAI-compatible hosts.
+            and optionally ``api_credential`` for additional OpenAI-compatible hosts.
 
     Returns:
         Deduplicated list of :class:`ModelEntry` objects.
@@ -68,7 +68,7 @@ def discover_models(
             _get_openai_compatible_models(
                 ep["endpoint"],
                 ep["name"],
-                ep.get("api_key"),
+                ep.get("api_credential"),
             )
         )
 

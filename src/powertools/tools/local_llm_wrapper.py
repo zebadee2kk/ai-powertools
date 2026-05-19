@@ -54,12 +54,12 @@ class LocalLLMRequestWrapper:
         *,
         base_url: str,
         model: str,
-        api_key: Optional[str] = None,
+        api_credential: Optional[str] = None,
         timeout_seconds: float = 30.0,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
-        self.api_key = api_key
+        self.api_credential = api_credential
         self.timeout_seconds = timeout_seconds
 
     def build_transfer_payload(self, request: WrappedLLMRequest) -> str:
@@ -97,8 +97,8 @@ class LocalLLMRequestWrapper:
         }
 
         headers = {"Content-Type": "application/json"}
-        if self.api_key:
-            headers["Authorization"] = f"Bearer {self.api_key}"
+        if self.api_credential:
+            headers["Authorization"] = f"Bearer {self.api_credential}"
 
         should_close = client is None
         http_client = client or httpx.AsyncClient(timeout=self.timeout_seconds)
