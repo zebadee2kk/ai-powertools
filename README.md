@@ -1,3 +1,15 @@
+# Repository status: internally consolidated to agent-toolkit
+
+Active internal development for this project has moved to the private `zebadee2kk/agent-toolkit` repository at:
+
+`ai-powertools/`
+
+This public repository remains available as a public reference / legacy source unless Richard separately approves an archive decision. External users should treat this repository as reference material unless a future public status update says otherwise.
+
+No repository deletion or archive action is planned in this PR.
+
+---
+
 # AI PowerTools 🚀
 
 **The composable toolkit that LangChain should have been.**
